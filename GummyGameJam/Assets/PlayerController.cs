@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
 	public Sticky leftSticky;
 	public Sticky rightSticky;
 	public Transform respawnPoint;
+    public Transform pivot;
+    public Vector3 offset;
 
 	public Rigidbody2D rb{get;set;}
 	private Sticky stuckSticky;		//the sticky that is currently stuck
@@ -55,12 +57,33 @@ public class PlayerController : MonoBehaviour
 	}
 	void UpdateOnGround()
 	{
-		Vector3 start = transform.position - new Vector3(0f,.02f,0f);
-		Debug.DrawLine(start, start + new Vector3(0, -.1f,0f), Color.red);
-		if(Physics2D.Raycast(start, Vector2.down, .1f))
-		   onGround = true;
-		else onGround = false;
+        /*
+        if (Physics2D.Raycast(transform.position - new Vector3(0f, .02f, 0f), new Vector2(0f, -1f), .1f))
+        {
+            onGround = true;
+            Vector3 start = transform.position - new Vector3(0f,.02f,0f);
+            Debug.DrawLine(start, start + new Vector3(0, -.1f,0f), Color.red);
+        }
+        if (Physics2D.Raycast(transform.position + new Vector3(0f, 1f, 0f), Vector2.up, .1f))
+        {
+            onGround = true;
+            Vector3 start = transform.position - new Vector3(0f,1,0f);
+            Debug.DrawLine(start, start + new Vector3(0, 1.1f, 0f), Color.red);
+        }
+        else onGround = false;*/
 	}
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        onGround = true;
+    }
+    void OnCollisionStay2D(Collision2D other)
+    {
+        onGround = true;
+    }
+    void OnCollisionExit2D(Collision2D other)
+    {
+        onGround = false;
+    }
 
 	void ProcessStickyInput()
 	{
@@ -87,17 +110,27 @@ public class PlayerController : MonoBehaviour
 	}
 	void StickyMovementEngine()
 	{
-		transform.RotateAround(stuckSticky.transform.position, Vector3.forward, Input.GetAxis("HorizontalP"+playerNum) * 3);
+		//transform.RotateAround(pivot.position, Vector3.forward, Input.GetAxis("HorizontalP"+playerNum) * 3);
+        transform.parent.Rotate(Vector3.forward, Input.GetAxis("HorizontalP" + playerNum) * 3);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, offset, .5f);
+
+        transform.localRotation = Quaternion.identity;
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
 		if(other.tag == "KillZone")
 		{
+            stuck = false;
+            if (stuckSticky) stuckSticky.Unstick();
+            stuckSticky = null;
+
 			transform.position = respawnPoint.position;
 			
 			rb.velocity = Vector2.zero;
 			rb.angularVelocity = 0f;
+
+            transform.localScale = new Vector3(1f, 1f, 1f);
 		}
 	}
 }

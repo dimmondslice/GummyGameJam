@@ -9,6 +9,8 @@ public class platformLerp : MonoBehaviour
 	private Vector3 target;
 	// Use this for initialization
 	void Start () {
+        start += transform.position;
+        End += transform.position;
 		target = start;
 	}
 	

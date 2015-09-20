@@ -31,9 +31,6 @@ public class Sticky : MonoBehaviour
 
 	public void StickToThatThing()
 	{
-
-		transform.root.parent = touching.root;		//this is an important step
-
 		stuckTo = touching;
 		canStick = false;
 		isStuck = true;
@@ -45,15 +42,25 @@ public class Sticky : MonoBehaviour
 		player.rb.gravityScale = 0;
 		player.rb.angularVelocity = 0f;
 
-		effect = (GameObject)Resources.Load("StickyEffect");
-		effect = Instantiate(effect, transform.position, transform.rotation) as GameObject;
-		effect.transform.parent = touching.root;
+		//effect = (GameObject)Resources.Load("StickyEffect");
+		//effect = Instantiate(effect, transform.position, transform.rotation) as GameObject;
+		//effect.transform.parent = touching.root;
+
+        GameObject pivot = (GameObject)Resources.Load("Pivot");
+        pivot = Instantiate(pivot, transform.position, transform.rotation) as GameObject;
+        player.pivot = pivot.transform;
+
+        player.transform.parent = player.pivot;		//this is an important step
+        player.pivot.parent = touching.root;
+        player.offset = player.transform.localPosition;
 	}
 	public void Unstick()
 	{
 		player.transform.parent = null;		//this is an important step
+        Destroy(player.pivot.gameObject);
+        player.pivot = null;
 
-		player.rb.gravityScale = 1;
+		player.rb.gravityScale = 2;
 
 		stuckTo = null;
 		canStick = false;
@@ -61,5 +68,7 @@ public class Sticky : MonoBehaviour
 		stuckToEnv = false;
 
 		Destroy(effect);
+
+        player.transform.localScale = new Vector3(1f, 1f, 1f);
 	}
 }
