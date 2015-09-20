@@ -9,6 +9,8 @@ public class Sticky : MonoBehaviour
 	public Transform stuckTo;
 	public bool stuckToEnv;
 
+	private GameObject effect;
+
 	public PlayerController player;
 
 	public void Start()
@@ -41,6 +43,11 @@ public class Sticky : MonoBehaviour
 		player.rb.velocity = Vector2.zero;
 		player.rb.gravityScale = 0;
 		player.rb.angularVelocity = 0f;
+
+
+		effect = (GameObject)Resources.Load("StickyEffect");
+		effect = Instantiate(effect, transform.position, transform.rotation) as GameObject;
+		effect.transform.parent = touching.root;
 	}
 	public void Unstick()
 	{
@@ -52,5 +59,7 @@ public class Sticky : MonoBehaviour
 		canStick = false;
 		isStuck = false;
 		stuckToEnv = false;
+
+		Destroy(effect);
 	}
 }
