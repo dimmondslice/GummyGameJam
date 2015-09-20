@@ -31,6 +31,7 @@ public class Sticky : MonoBehaviour
 
 	public void StickToThatThing()
 	{
+
 		transform.root.parent = touching.root;		//this is an important step
 
 		stuckTo = touching;
@@ -43,7 +44,6 @@ public class Sticky : MonoBehaviour
 		player.rb.velocity = Vector2.zero;
 		player.rb.gravityScale = 0;
 		player.rb.angularVelocity = 0f;
-
 
 		effect = (GameObject)Resources.Load("StickyEffect");
 		effect = Instantiate(effect, transform.position, transform.rotation) as GameObject;
