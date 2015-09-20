@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 	
 	public Sticky leftSticky;
 	public Sticky rightSticky;
+	public Transform respawnPoint;
 
 	public Rigidbody2D rb{get;set;}
 	private Sticky stuckSticky;		//the sticky that is currently stuck
@@ -38,7 +39,10 @@ public class PlayerController : MonoBehaviour
 	{
 		//rb.velocity = new Vector2(Input.GetAxis("Horizontal")*speed, );
 		if(Mathf.Abs(rb.velocity.x) < Mathf.Abs(maxSpeed))
+		{
 			rb.AddForce(new Vector2(Input.GetAxis("HorizontalP"+playerNum)* moveForce,0), ForceMode2D.Force);
+			//rb.AddForceAtPosition(new Vector2(Input.GetAxis("HorizontalP"+playerNum)* moveForce,0),new Vector2(0f,1f), ForceMode2D.Force);
+		}
 		else
 		{
 			//rb.AddTorque(-1 * Mathf.Sign(rb.velocity.x));	//make gummy rotate
@@ -51,8 +55,9 @@ public class PlayerController : MonoBehaviour
 	}
 	void UpdateOnGround()
 	{
-		Debug.DrawLine(transform.position, transform.position + new Vector3(0, -.55f,0f), Color.red);
-		if(Physics2D.Raycast(transform.position, Vector2.down, .55f))
+		Vector3 start = transform.position - new Vector3(0f,.02f,0f);
+		Debug.DrawLine(start, start + new Vector3(0, -.1f,0f), Color.red);
+		if(Physics2D.Raycast(start, Vector2.down, .1f))
 		   onGround = true;
 		else onGround = false;
 	}
@@ -83,5 +88,16 @@ public class PlayerController : MonoBehaviour
 	void StickyMovementEngine()
 	{
 		transform.RotateAround(stuckSticky.transform.position, Vector3.forward, Input.GetAxis("HorizontalP"+playerNum) * 3);
+	}
+
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		if(other.tag == "KillZone")
+		{
+			transform.position = respawnPoint.position;
+			
+			rb.velocity = Vector2.zero;
+			rb.angularVelocity = 0f;
+		}
 	}
 }
