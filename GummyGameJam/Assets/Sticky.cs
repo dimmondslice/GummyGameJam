@@ -23,6 +23,12 @@ public class Sticky : MonoBehaviour
 			canStick = true;
 		touching = other.transform;
 	}
+	public void OnTriggerStay2D(Collider2D other)
+	{
+		if(!isStuck)
+			canStick = true;
+		//touching = other.transform;
+	}
 	public void OnTriggerExit2D(Collider2D other)
 	{
 		canStick = false;
@@ -42,9 +48,9 @@ public class Sticky : MonoBehaviour
 		player.rb.gravityScale = 0;
 		player.rb.angularVelocity = 0f;
 
-		//effect = (GameObject)Resources.Load("StickyEffect");
-		//effect = Instantiate(effect, transform.position, transform.rotation) as GameObject;
-		//effect.transform.parent = touching.root;
+		effect = (GameObject)Resources.Load("StickyEffect");
+		effect = Instantiate(effect, transform.position, transform.rotation) as GameObject;
+		effect.transform.parent = touching.root;
 
         GameObject pivot = (GameObject)Resources.Load("Pivot");
         pivot = Instantiate(pivot, transform.position, transform.rotation) as GameObject;

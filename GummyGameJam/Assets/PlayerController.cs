@@ -87,7 +87,8 @@ public class PlayerController : MonoBehaviour
 
 	void ProcessStickyInput()
 	{
-		if (stuck && (Input.GetButtonUp("LeftStickyP"+playerNum) || Input.GetButtonUp("RightStickyP"+playerNum)))
+		if (stuck && ((Input.GetButtonUp("LeftStickyP"+playerNum)&&leftSticky.isStuck) || 
+		              (Input.GetButtonUp("RightStickyP"+playerNum)&& rightSticky.isStuck)))
 		{
 			stuck = false;
 			stuckSticky.Unstick();
@@ -112,7 +113,7 @@ public class PlayerController : MonoBehaviour
 	{
 		//transform.RotateAround(pivot.position, Vector3.forward, Input.GetAxis("HorizontalP"+playerNum) * 3);
         transform.parent.Rotate(Vector3.forward, Input.GetAxis("HorizontalP" + playerNum) * 3);
-        transform.localPosition = Vector3.Lerp(transform.localPosition, offset, .5f);
+        //transform.localPosition = Vector3.Lerp(transform.localPosition, offset, .5f);
 
         transform.localRotation = Quaternion.identity;
 	}
